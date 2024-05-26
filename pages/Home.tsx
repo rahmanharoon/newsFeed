@@ -56,7 +56,7 @@ const HomeScreen = () => {
   }, [pinnedHeadlines]);
 
   // list header item
-  const renderHeader = () => (
+  const renderHeader = (
     <>
       {pinnedHeadlines?.length > 0 ? (
         <View style={styles.g8}>
