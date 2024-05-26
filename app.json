@@ -18,10 +18,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "orange"
-      }
+      },
+      "package": "com.rahmanh.myNewsFeed"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "18c025be-0105-4f78-af68-4aa46deb29d7"
+      }
     }
   }
 }

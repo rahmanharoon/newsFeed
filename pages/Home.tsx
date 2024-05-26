@@ -33,6 +33,7 @@ const HomeScreen = () => {
     return (
       <HeadlineCard
         {...item}
+        index={index}
         onPinHandler={onPinFunc}
         onDeleteHandler={onDelete}
       />
@@ -46,6 +47,7 @@ const HomeScreen = () => {
         <HeadlineCard
           isPin
           {...data}
+          index={index}
           key={data?.title}
           onUnpinHandler={onPinFunc}
         />
@@ -58,11 +60,11 @@ const HomeScreen = () => {
     <>
       {pinnedHeadlines?.length > 0 ? (
         <View style={styles.g8}>
-          <HeaderText title="Pinned HeadLines" />
+          <HeaderText title="Pinned News" count={pinnedHeadlines?.length} />
           {renderPinnedItems}
         </View>
       ) : null}
-      <HeaderText title="HeadLines" isSpacing />
+      <HeaderText title="News" isSpacing count={headlines?.length} />
     </>
   );
 

@@ -4,9 +4,11 @@ import { themes } from "../assets/common/themes";
 
 const HeaderText = ({
   title,
+  count,
   isSpacing,
 }: {
   title: string;
+  count: number;
   isSpacing?: boolean;
 }) => {
   const headerCardStyle = StyleSheet.compose(
@@ -16,6 +18,7 @@ const HeaderText = ({
   return (
     <View style={headerCardStyle}>
       <Text style={styles.headerTxt}>{title}</Text>
+      <Text style={styles.descText}>{count}</Text>
     </View>
   );
 };

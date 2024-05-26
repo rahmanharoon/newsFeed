@@ -1,14 +1,15 @@
 import { Image } from "expo-image";
-import React, { memo } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import CustomButton from "./CustomButton";
 import { themes } from "../assets/common/themes";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Animated } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import { IHeadline } from "../interface/headline.interface";
 
 const NO_IMG = require("../assets/images/no-photo.png");
 
 interface IHeadlineCardProps extends IHeadline {
+  index: number;
   isPin?: boolean;
   onPinHandler?: () => void;
   onDeleteHandler?: () => void;
@@ -25,22 +26,29 @@ const HeadlineCard = ({
   description,
   onPinHandler,
   onDeleteHandler,
+  index,
 }: IHeadlineCardProps) => {
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
   const date = new Date(publishedAt);
 
   // Get the individual components of the date
   const day = date.getUTCDate();
   const month = date.getUTCMonth() + 1; // Months are zero-based, so add 1
   const year = date.getUTCFullYear();
-  const hours = date.getUTCHours();
+  let hours = date.getUTCHours();
   const minutes = date.getUTCMinutes();
+  const amPm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12;
+  hours = hours ? hours : 12;
 
   // Format the date components into the desired format
   const formattedDate = `${day < 10 ? "0" : ""}${day}-${
     month < 10 ? "0" : ""
   }${month}-${year} ${hours < 10 ? "0" : ""}${hours}:${
     minutes < 10 ? "0" : ""
-  }${minutes}`;
+  }${minutes} ${amPm}`;
 
   const renderHeadlineRight = (
     progressAnimatedValue: unknown,
@@ -97,13 +105,27 @@ const HeadlineCard = ({
     );
   };
 
-  const cardStyle = StyleSheet.compose(
-    styles.headlineCard,
-    isPin ? styles.pinnedCard : null
-  );
-
   const blurhash =
     "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
+
+  useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: 1,
+      duration: 500,
+      delay: index * 100, // Stagger animation by index
+      useNativeDriver: true,
+    }).start();
+  }, [animatedValue, index]);
+
+  const translateY = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [50, 0], // Start 50 units down, end at position
+  });
+
+  const cardStyle = StyleSheet.compose(styles.headlineCard, [
+    isPin ? styles.pinnedCard : null,
+    { opacity: animatedValue, transform: [{ translateY }] },
+  ]);
 
   return (
     <Swipeable
@@ -111,7 +133,7 @@ const HeadlineCard = ({
         isPin ? renderPinnedHeadlineRight : renderHeadlineRight
       }
     >
-      <View style={cardStyle}>
+      <Animated.View style={cardStyle}>
         <Image
           contentFit="cover"
           transition={1000}
@@ -130,7 +152,7 @@ const HeadlineCard = ({
           ) : null}
           <Text style={styles.timeTxt}>{formattedDate}</Text>
         </View>
-      </View>
+      </Animated.View>
     </Swipeable>
   );
 };
